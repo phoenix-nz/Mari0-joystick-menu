@@ -1,0 +1,112 @@
+diff -ruN mari0_1.6_orig/conf.lua mari0_1.6/conf.lua
+--- mari0_1.6_orig/conf.lua	2012-03-16 15:18:30.000000000 +0100
++++ mari0_1.6/conf.lua	2013-09-17 18:54:58.000000000 +0200
+@@ -5,4 +5,5 @@
+ 	--t.screen = false
+ 	t.modules.physics = false
+ 	t.version = "0.8.0"
+-end
+\ No newline at end of file
++	t.screen.fullscreen = true
++end
+diff -ruN mari0_1.6_orig/game.lua mari0_1.6/game.lua
+--- mari0_1.6_orig/game.lua	2012-03-16 10:33:04.000000000 +0100
++++ mari0_1.6/game.lua	2013-09-18 16:32:37.000000000 +0200
+@@ -3906,9 +3906,23 @@
+ 
+ function game_joystickpressed( joystick, button )	
+ 	if pausemenuopen then
++		if button == 14 then
++			game_keypressed( "up", button )
++		elseif button == 13 then
++			game_keypressed( "right", button )
++		elseif button == 12 then
++			game_keypressed( "left", button )
++		elseif button == 15 then
++			game_keypressed( "down", button )
++		elseif button == 1 then
++			game_keypressed( "enter", button )
++		elseif button == 2 or button == 8 or button == 11 then
++			game_keypressed( "escape", button )
++		end	
+ 		return
+ 	end
+ 	if endpressbutton then
++		endpressbutton = false
+ 		endgame()
+ 		return
+ 	end
+@@ -3962,6 +3976,11 @@
+ 			end
+ 		end
+ 	end
++	
++	if button == 8 or button == 11 then
++		game_keypressed( "escape", button )
++	end
++		
+ end
+ 
+ function game_joystickreleased( joystick, button )
+diff -ruN mari0_1.6_orig/main.lua mari0_1.6/main.lua
+--- mari0_1.6_orig/main.lua	2012-03-16 21:09:14.000000000 +0100
++++ mari0_1.6/main.lua	2013-09-17 22:17:24.000000000 +0200
+@@ -1301,16 +1301,19 @@
+ 		return
+ 	end
+ 	
++	--io.write( "Joystick", joystick, " Button", button, " State", gamestate, "\n")
+ 	if gamestate == "menu" or gamestate == "options" then
+ 		menu_joystickpressed(joystick, button)
+ 	elseif gamestate == "game" then
+ 		game_joystickpressed(joystick, button)
++	elseif gamestate == "intro" then
++		intro_keypressed()
+ 	end
+ end
+ 
+ function love.joystickreleased(joystick, button)
+ 	if gamestate == "menu" or gamestate == "options" then
+-		menu_joystickreleased(joystick, button)
++		menu_joystickreleased(joystick, button)		
+ 	elseif gamestate == "game" then
+ 		game_joystickreleased(joystick, button)
+ 	end
+@@ -1559,4 +1562,4 @@
+ 		custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
+ 		custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
+ 	end
+-end
+\ No newline at end of file
++end
+diff -ruN mari0_1.6_orig/menu.lua mari0_1.6/menu.lua
+--- mari0_1.6_orig/menu.lua	2012-03-16 21:41:54.000000000 +0100
++++ mari0_1.6/menu.lua	2013-09-18 16:15:55.000000000 +0200
+@@ -2044,7 +2044,19 @@
+ end
+ 
+ function menu_joystickpressed(joystick, button)
+-
++	if button == 14 then
++		menu_keypressed( "up", button )
++	elseif button == 13 then
++		menu_keypressed( "right", button )
++	elseif button == 12 then
++		menu_keypressed( "left", button )
++	elseif button == 15 then
++		menu_keypressed( "down", button )
++	elseif button == 1 then
++		menu_keypressed( "enter", button )
++	elseif button == 2 or button == 8 or button == 11 then
++		menu_keypressed( "escape", button )
++	end	
+ end
+ 
+ function menu_joystickreleased(joystick, button)
+@@ -2224,4 +2236,4 @@
+ 			selectworldexists[i] = true
+ 		end
+ 	end
+-end
+\ No newline at end of file
++end
